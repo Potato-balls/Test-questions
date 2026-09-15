@@ -1,5 +1,4 @@
 import { PropsWithChildren } from 'react';
-import Taro from '@tarojs/taro';
 import './index.scss';
 
 interface AppProps {

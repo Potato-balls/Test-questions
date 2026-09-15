@@ -17,7 +17,7 @@ interface Address {
   special?: string; // 特殊信息如倒计时
 }
 
-// 标签颜色映射
+// 标签颜色映射（用于样式命名）
 const TAG_COLORS: Record<Tag['type'], { bg: string; text: string }> = {
   common: { bg: '#FFE4E1', text: '#E91E63' },
   company: { bg: '#E3F2FD', text: '#1976D2' },
@@ -98,7 +98,6 @@ const MOCK_ADDRESSES: Address[] = [
 
 // 单个标签组件
 const TagBadge: React.FC<{ tag: Tag }> = ({ tag }) => {
-  const colors = TAG_COLORS[tag.type];
   return (
     <span className={`tag-badge tag-${tag.type}`}>
       <span className="tag-text">{tag.label}</span>
