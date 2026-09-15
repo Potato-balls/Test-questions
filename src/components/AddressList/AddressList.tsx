@@ -17,17 +17,6 @@ interface Address {
   special?: string; // 特殊信息如倒计时
 }
 
-// 标签颜色映射（用于样式命名）
-const TAG_COLORS: Record<Tag['type'], { bg: string; text: string }> = {
-  common: { bg: '#FFE4E1', text: '#E91E63' },
-  company: { bg: '#E3F2FD', text: '#1976D2' },
-  recent: { bg: '#FFF3E0', text: '#F57C00' },
-  school: { bg: '#F3E5F5', text: '#7B1FA2' },
-  parents: { bg: '#E8F5E9', text: '#388E3C' },
-  home: { bg: '#FFF8E1', text: '#F9A825' },
-  distance: { bg: '#E0F7FA', text: '#00838F' },
-};
-
 // 示例数据 - 模拟图片中的地址列表
 const MOCK_ADDRESSES: Address[] = [
   {
