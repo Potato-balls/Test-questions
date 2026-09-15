@@ -85,13 +85,27 @@ body {
   margin-bottom: 8px;
 }
 
-/* 地址行 - 标签和地址在同一容器，flex-wrap 自然换行，最多两行 */
+/* 地址行 */
 .address-line {
   display: flex;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.line-1 {
+  flex-wrap: nowrap;
+}
+
+.line-2 {
+  margin-top: 4px;
+}
+
+/* 标签容器 */
+.tags-container {
+  display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  max-height: 2.7em; /* 限制最多两行：line-height(1.5) * 2 - 间距 */
-  overflow: hidden;
+  flex-shrink: 0;
+  margin-right: 8px;
 }
 
 /* 标签徽章 - 不折行 */
@@ -106,8 +120,6 @@ body {
   line-height: 1.4;
   white-space: nowrap;
   flex-shrink: 0;
-  margin-right: 8px;
-  margin-bottom: 4px;
 }
 
 .tag-text {
@@ -150,17 +162,25 @@ body {
   color: #00838F;
 }
 
-/* 地址文本 - 随 flex-wrap 自然换行 */
+/* 地址文本 */
 .address-text {
   font-size: 32px;
   font-weight: 500;
   color: #333;
   line-height: 1.5;
+  word-break: break-all;
+  white-space: nowrap;
   flex: 1;
   min-width: 0;
+}
+
+.address-text-second {
+  font-size: 32px;
+  font-weight: 500;
+  color: #333;
+  line-height: 1.5;
   word-break: break-all;
   white-space: normal;
-  margin-bottom: 4px;
 }
 
 /* 特殊标签（如倒计时） */

@@ -105,20 +105,75 @@ const TagBadge: React.FC<{ tag: Tag }> = ({ tag }) => {
   );
 };
 
-// 地址行组件 - 标签和地址在同一容器，flex-wrap 自然换行，最多两行
+// 地址行组件 - 标签固定在第一行，地址可折行到第二行
 const AddressLine: React.FC<{ address: Address }> = ({ address }) => {
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const tagsRef = React.useRef<HTMLDivElement>(null);
+  const textRef = React.useRef<HTMLSpanElement>(null);
+  const [lines, setLines] = React.useState<string>('');
+
+  React.useEffect(() => {
+    const measureLines = () => {
+      if (!containerRef.current || !textRef.current) return;
+
+      // 重置为单行测量
+      textRef.current.style.display = 'inline';
+      textRef.current.style.whiteSpace = 'normal';
+      textRef.current.style.wordBreak = 'break-all';
+
+      const containerWidth = containerRef.current.clientWidth;
+      const tagsWidth = tagsRef.current?.offsetWidth || 0;
+      const availableWidth = containerWidth - tagsWidth - 8; // 8px margin
+
+      // 估算每行可容纳的字符数（中文字符约20px，英文约12px）
+      let charsPerLine = Math.floor(availableWidth / 18);
+
+      // 计算需要多少行
+      const totalChars = address.address.length;
+      const linesNeeded = Math.ceil(totalChars / charsPerLine);
+
+      if (linesNeeded <= 1) {
+        setLines('');
+      } else {
+        // 提取第二行的内容
+        const firstLineChars = charsPerLine;
+        const remainingText = address.address.slice(firstLineChars);
+        setLines(remainingText);
+      }
+    };
+
+    // 使用 ResizeObserver 监听容器大小变化
+    const observer = new ResizeObserver(measureLines);
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    // 初始测量
+    requestAnimationFrame(measureLines);
+
+    return () => observer.disconnect();
+  }, [address.address, address.tags]);
+
   return (
     <div className="address-line-wrapper">
-      <div className="address-line">
-        {/* 标签 */}
-        {address.tags.map((tag, idx) => (
-          <TagBadge key={idx} tag={tag} />
-        ))}
-        {/* 地址文本 */}
-        <span className="address-text">{address.address}</span>
-        {/* 特殊信息 */}
+      {/* 第一行：标签 + 地址开头 */}
+      <div ref={containerRef} className="address-line line-1">
+        <div ref={tagsRef} className="tags-container">
+          {address.tags.map((tag, idx) => (
+            <TagBadge key={idx} tag={tag} />
+          ))}
+        </div>
+        <span ref={textRef} className="address-text">{address.address}</span>
         {address.special && <span className="special-tag">{address.special}</span>}
       </div>
+
+      {/* 第二行：溢出的地址文本 */}
+      {lines && (
+        <div className="address-line line-2">
+          <span className="address-text address-text-second">{lines}</span>
+          {address.special && <span className="special-tag">{address.special}</span>}
+        </div>
+      )}
     </div>
   );
 };
