@@ -94,12 +94,19 @@ body {
   overflow: hidden;
 }
 
-/* 第二行：只有地址文本（如果有溢出） */
+/* 标签包装器 - 用于测量宽度 */
+.tags-wrapper {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-right: 8px;
+}
+
+/* 第二行：溢出的地址文本，与第一行地址开头对齐 */
 .address-line.line-2 {
   display: flex;
   align-items: center;
   margin-top: 4px;
-  padding-left: 0;
 }
 
 /* 标签徽章 - 不折行 */

@@ -108,14 +108,21 @@ const TagBadge: React.FC<{ tag: Tag }> = ({ tag }) => {
 // 地址行组件 - 标签在第一行，地址文本在标签后，可折行到第二行
 const AddressLine: React.FC<{ address: Address }> = ({ address }) => {
   const line1Ref = React.useRef<HTMLDivElement>(null);
+  const tagsRef = React.useRef<HTMLDivElement>(null);
   const [needsSecondLine, setNeedsSecondLine] = React.useState(false);
+  const [secondLineIndent, setSecondLineIndent] = React.useState(0);
 
   React.useEffect(() => {
-    // 检查第一行是否有溢出
     const checkOverflow = () => {
-      if (line1Ref.current) {
+      if (line1Ref.current && tagsRef.current) {
+        // 检测第一行是否溢出
         const { scrollWidth, clientWidth } = line1Ref.current;
-        setNeedsSecondLine(scrollWidth > clientWidth);
+        const hasOverflow = scrollWidth > clientWidth;
+
+        // 获取标签的宽度作为第二行的缩进
+        const tagsWidth = tagsRef.current.offsetWidth;
+        setSecondLineIndent(tagsWidth);
+        setNeedsSecondLine(hasOverflow);
       }
     };
 
@@ -130,15 +137,17 @@ const AddressLine: React.FC<{ address: Address }> = ({ address }) => {
     <div className="address-line-wrapper">
       {/* 第一行：标签 + 地址开头 */}
       <div ref={line1Ref} className="address-line line-1">
-        {address.tags.map((tag, idx) => (
-          <TagBadge key={idx} tag={tag} />
-        ))}
+        <div ref={tagsRef} className="tags-wrapper">
+          {address.tags.map((tag, idx) => (
+            <TagBadge key={idx} tag={tag} />
+          ))}
+        </div>
         <span className="address-text">{address.address}</span>
       </div>
 
-      {/* 第二行：溢出的地址文本 + 特殊信息 */}
+      {/* 第二行：溢出的地址文本，与第一行地址开头对齐 */}
       {needsSecondLine && (
-        <div className="address-line line-2">
+        <div className="address-line line-2" style={{ paddingLeft: `${secondLineIndent}px` }}>
           <span className="address-text address-text-second-line">
             {address.address}
           </span>
