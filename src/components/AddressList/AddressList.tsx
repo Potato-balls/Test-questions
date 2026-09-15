@@ -105,7 +105,7 @@ const TagBadge: React.FC<{ tag: Tag }> = ({ tag }) => {
   );
 };
 
-// 地址行组件 - 每行都有标签，地址文本可折行到第二行，最多两行
+// 地址行组件 - 标签在第一行，地址可折行到第二行（第二行无标签）
 const AddressLine: React.FC<{ address: Address }> = ({ address }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const textRef = React.useRef<HTMLSpanElement>(null);
@@ -119,33 +119,20 @@ const AddressLine: React.FC<{ address: Address }> = ({ address }) => {
       const container = containerRef.current;
       const text = textRef.current;
 
-      // 让文本在容器中自然流式布局，测量是否溢出两行
-      text.style.whiteSpace = 'normal';
-      text.style.wordBreak = 'break-all';
+      // 测量容器可用宽度（减去标签宽度）
+      const containerWidth = container.clientWidth;
+      const tagsElement = container.querySelector('.tags-container') as HTMLElement;
+      const tagsWidth = tagsElement?.offsetWidth || 0;
+      const availableWidth = containerWidth - tagsWidth - 16;
 
-      const maxTwoLinesHeight = container.clientHeight;
+      // 估算每行可容纳的字符数
+      const charsPerLine = Math.floor(availableWidth / 18);
+      const totalChars = address.address.length;
 
-      // 检查是否溢出两行
-      const needsEllipsis = text.scrollHeight > maxTwoLinesHeight + 5; // 容差 5px
-
-      if (needsEllipsis && address.address.length > 0) {
-        // 估算第二行应该显示的内容
-        const containerWidth = container.clientWidth;
-        const tagsWidth = container.offsetWidth - (container.querySelector('.address-text') as HTMLElement)?.offsetWidth || 0;
-        const availableWidth = containerWidth - tagsWidth - 16; // 16px margin
-
-        // 估算每行字符数（按 18px 每个字符估算）
-        const charsPerLine = Math.floor(availableWidth / 18);
-        const totalChars = address.address.length;
-
-        if (totalChars > charsPerLine) {
-          // 第二行显示剩余字符（可能被省略号截断）
-          setSecondLineText(address.address.slice(charsPerLine));
-          setHasOverflow(true);
-        } else {
-          setSecondLineText('');
-          setHasOverflow(false);
-        }
+      if (totalChars > charsPerLine) {
+        // 需要显示第二行
+        setSecondLineText(address.address.slice(charsPerLine));
+        setHasOverflow(true);
       } else {
         setSecondLineText('');
         setHasOverflow(false);
@@ -166,25 +153,20 @@ const AddressLine: React.FC<{ address: Address }> = ({ address }) => {
 
   return (
     <div className="address-line-wrapper">
-      {/* 第一行：标签 + 地址 */}
+      {/* 第一行：标签 + 地址开头 */}
       <div ref={containerRef} className="address-line line-1">
         <div className="tags-container">
           {address.tags.map((tag, idx) => (
             <TagBadge key={idx} tag={tag} />
           ))}
         </div>
-        <span ref={textRef} className="address-text">{address.address}</span>
+        <span className="address-text address-text-first">{address.address}</span>
         {address.special && <span className="special-tag">{address.special}</span>}
       </div>
 
-      {/* 第二行：标签 + 溢出地址（如果有） */}
+      {/* 第二行：仅地址剩余部分（无标签） */}
       {hasOverflow && secondLineText && (
         <div className="address-line line-2">
-          <div className="tags-container">
-            {address.tags.map((tag, idx) => (
-              <TagBadge key={idx} tag={tag} />
-            ))}
-          </div>
           <span className="address-text address-text-second">{secondLineText}</span>
           {address.special && <span className="special-tag">{address.special}</span>}
         </div>

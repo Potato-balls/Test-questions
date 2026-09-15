@@ -162,18 +162,21 @@ body {
   color: #00838F;
 }
 
-/* 地址文本 */
-.address-text {
+/* 地址文本 - 第一行 */
+.address-text-first {
   font-size: 32px;
   font-weight: 500;
   color: #333;
   line-height: 1.5;
   word-break: break-all;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   flex: 1;
   min-width: 0;
 }
 
+/* 地址文本 - 第二行（无标签，从最左边开始） */
 .address-text-second {
   font-size: 32px;
   font-weight: 500;
