@@ -105,20 +105,46 @@ const TagBadge: React.FC<{ tag: Tag }> = ({ tag }) => {
   );
 };
 
-// 地址行组件 - 标签和地址名称共同展示，最多两行
+// 地址行组件 - 标签在第一行，地址文本在标签后，可折行到第二行
 const AddressLine: React.FC<{ address: Address }> = ({ address }) => {
+  const line1Ref = React.useRef<HTMLDivElement>(null);
+  const [needsSecondLine, setNeedsSecondLine] = React.useState(false);
+
+  React.useEffect(() => {
+    // 检查第一行是否有溢出
+    const checkOverflow = () => {
+      if (line1Ref.current) {
+        const { scrollWidth, clientWidth } = line1Ref.current;
+        setNeedsSecondLine(scrollWidth > clientWidth);
+      }
+    };
+
+    // 使用 requestAnimationFrame 确保 DOM 已渲染
+    requestAnimationFrame(checkOverflow);
+    window.addEventListener('resize', checkOverflow);
+
+    return () => window.removeEventListener('resize', checkOverflow);
+  }, [address.address, address.tags]);
+
   return (
     <div className="address-line-wrapper">
-      <div className="address-line">
-        {/* 标签 */}
+      {/* 第一行：标签 + 地址开头 */}
+      <div ref={line1Ref} className="address-line line-1">
         {address.tags.map((tag, idx) => (
           <TagBadge key={idx} tag={tag} />
         ))}
-        {/* 地址文本 */}
         <span className="address-text">{address.address}</span>
-        {/* 特殊信息 */}
-        {address.special && <span className="special-tag">{address.special}</span>}
       </div>
+
+      {/* 第二行：溢出的地址文本 + 特殊信息 */}
+      {needsSecondLine && (
+        <div className="address-line line-2">
+          <span className="address-text address-text-second-line">
+            {address.address}
+          </span>
+          {address.special && <span className="special-tag">{address.special}</span>}
+        </div>
+      )}
     </div>
   );
 };

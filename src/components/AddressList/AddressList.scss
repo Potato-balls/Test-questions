@@ -83,28 +83,26 @@ body {
 /* 地址行包装 */
 .address-line-wrapper {
   margin-bottom: 8px;
-  width: 100%;
 }
 
-/* 地址行 - 标签和地址名称可以在同一行，溢出换行，最多两行 */
-.address-line {
+/* 第一行：标签固定在这里，地址文本紧跟其后 */
+.address-line.line-1 {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   width: 100%;
+  overflow: hidden;
 }
 
-/* 标签容器 */
-.tags-container {
+/* 第二行：只有地址文本（如果有溢出） */
+.address-line.line-2 {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-right: 8px;
-  flex-shrink: 0;
+  margin-top: 4px;
+  padding-left: 0;
 }
 
-/* 标签徽章 */
+/* 标签徽章 - 不折行 */
 .tag-badge {
   display: inline-flex;
   align-items: center;
@@ -116,6 +114,7 @@ body {
   line-height: 1.4;
   white-space: nowrap;
   flex-shrink: 0;
+  margin-right: 8px;
 }
 
 .tag-text {
@@ -158,7 +157,7 @@ body {
   color: #00838F;
 }
 
-/* 地址文本 */
+/* 地址文本 - 第一行显示，超出部分在第二行 */
 .address-text {
   font-size: 32px;
   font-weight: 500;
@@ -167,11 +166,15 @@ body {
   flex: 1;
   min-width: 0;
   word-break: break-all;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  white-space: normal;
+}
+
+.address-text-second-line {
+  font-size: 32px;
+  font-weight: 500;
+  color: #333;
+  line-height: 1.5;
+  word-break: break-all;
 }
 
 /* 特殊标签（如倒计时） */
