@@ -83,6 +83,17 @@ const MOCK_ADDRESSES: Address[] = [
     phone: '112****3838',
     isSelected: false,
   },
+  {
+    id: '7',
+    tags: [
+      { label: '常用', type: 'common' },
+      { label: '公司', type: 'company' },
+    ],
+    address: '这是一段很长的地址文字，用于测试当地址文本超出两行时是否能正确显示省略号',
+    name: '张先生',
+    phone: '112****3838',
+    isSelected: false,
+  },
 ];
 
 // 单个标签组件

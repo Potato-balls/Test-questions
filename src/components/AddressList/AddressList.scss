@@ -90,9 +90,6 @@ body {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  max-height: 2.7em; /* 限制最多两行: 1.5em * 2 */
-  overflow: hidden;
-  position: relative;
 }
 
 /* 标签容器 */
