@@ -83,6 +83,7 @@ body {
 /* 地址行包装 */
 .address-line-wrapper {
   margin-bottom: 8px;
+  width: 100%;
 }
 
 /* 地址行 - 标签和地址名称可以在同一行，溢出换行，最多两行 */
@@ -90,6 +91,7 @@ body {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+  width: 100%;
 }
 
 /* 标签容器 */
