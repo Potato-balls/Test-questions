@@ -117,7 +117,6 @@ const AddressLine: React.FC<{ address: Address }> = ({ address }) => {
       if (!containerRef.current || !textRef.current) return;
 
       const container = containerRef.current;
-      const text = textRef.current;
 
       // 测量容器可用宽度（减去标签宽度）
       const containerWidth = container.clientWidth;
