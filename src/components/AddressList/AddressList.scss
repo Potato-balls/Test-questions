@@ -85,28 +85,13 @@ body {
   margin-bottom: 8px;
 }
 
-/* 第一行：标签固定在这里，地址文本紧跟其后 */
-.address-line.line-1 {
+/* 地址行 - 标签和地址在同一容器，flex-wrap 自然换行，最多两行 */
+.address-line {
   display: flex;
   align-items: center;
-  flex-wrap: nowrap;
-  width: 100%;
+  flex-wrap: wrap;
+  max-height: 2.7em; /* 限制最多两行：line-height(1.5) * 2 - 间距 */
   overflow: hidden;
-}
-
-/* 标签包装器 - 用于测量宽度 */
-.tags-wrapper {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  margin-right: 8px;
-}
-
-/* 第二行：溢出的地址文本，与第一行地址开头对齐 */
-.address-line.line-2 {
-  display: flex;
-  align-items: center;
-  margin-top: 4px;
 }
 
 /* 标签徽章 - 不折行 */
@@ -122,6 +107,7 @@ body {
   white-space: nowrap;
   flex-shrink: 0;
   margin-right: 8px;
+  margin-bottom: 4px;
 }
 
 .tag-text {
@@ -164,7 +150,7 @@ body {
   color: #00838F;
 }
 
-/* 地址文本 - 第一行显示，超出部分在第二行 */
+/* 地址文本 - 随 flex-wrap 自然换行 */
 .address-text {
   font-size: 32px;
   font-weight: 500;
@@ -174,14 +160,7 @@ body {
   min-width: 0;
   word-break: break-all;
   white-space: normal;
-}
-
-.address-text-second-line {
-  font-size: 32px;
-  font-weight: 500;
-  color: #333;
-  line-height: 1.5;
-  word-break: break-all;
+  margin-bottom: 4px;
 }
 
 /* 特殊标签（如倒计时） */
