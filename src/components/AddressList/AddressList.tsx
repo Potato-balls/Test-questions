@@ -105,60 +105,70 @@ const TagBadge: React.FC<{ tag: Tag }> = ({ tag }) => {
   );
 };
 
-// 地址行组件 - 标签固定在第一行，地址可折行到第二行
+// 地址行组件 - 每行都有标签，地址文本可折行到第二行，最多两行
 const AddressLine: React.FC<{ address: Address }> = ({ address }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
-  const tagsRef = React.useRef<HTMLDivElement>(null);
   const textRef = React.useRef<HTMLSpanElement>(null);
-  const [lines, setLines] = React.useState<string>('');
+  const [secondLineText, setSecondLineText] = React.useState<string>('');
+  const [hasOverflow, setHasOverflow] = React.useState(false);
 
   React.useEffect(() => {
-    const measureLines = () => {
+    const measureOverflow = () => {
       if (!containerRef.current || !textRef.current) return;
 
-      // 重置为单行测量
-      textRef.current.style.display = 'inline';
-      textRef.current.style.whiteSpace = 'normal';
-      textRef.current.style.wordBreak = 'break-all';
+      const container = containerRef.current;
+      const text = textRef.current;
 
-      const containerWidth = containerRef.current.clientWidth;
-      const tagsWidth = tagsRef.current?.offsetWidth || 0;
-      const availableWidth = containerWidth - tagsWidth - 8; // 8px margin
+      // 让文本在容器中自然流式布局，测量是否溢出两行
+      text.style.whiteSpace = 'normal';
+      text.style.wordBreak = 'break-all';
 
-      // 估算每行可容纳的字符数（中文字符约20px，英文约12px）
-      let charsPerLine = Math.floor(availableWidth / 18);
+      const maxTwoLinesHeight = container.clientHeight;
 
-      // 计算需要多少行
-      const totalChars = address.address.length;
-      const linesNeeded = Math.ceil(totalChars / charsPerLine);
+      // 检查是否溢出两行
+      const needsEllipsis = text.scrollHeight > maxTwoLinesHeight + 5; // 容差 5px
 
-      if (linesNeeded <= 1) {
-        setLines('');
+      if (needsEllipsis && address.address.length > 0) {
+        // 估算第二行应该显示的内容
+        const containerWidth = container.clientWidth;
+        const tagsWidth = container.offsetWidth - (container.querySelector('.address-text') as HTMLElement)?.offsetWidth || 0;
+        const availableWidth = containerWidth - tagsWidth - 16; // 16px margin
+
+        // 估算每行字符数（按 18px 每个字符估算）
+        const charsPerLine = Math.floor(availableWidth / 18);
+        const totalChars = address.address.length;
+
+        if (totalChars > charsPerLine) {
+          // 第二行显示剩余字符（可能被省略号截断）
+          setSecondLineText(address.address.slice(charsPerLine));
+          setHasOverflow(true);
+        } else {
+          setSecondLineText('');
+          setHasOverflow(false);
+        }
       } else {
-        // 提取第二行的内容
-        const firstLineChars = charsPerLine;
-        const remainingText = address.address.slice(firstLineChars);
-        setLines(remainingText);
+        setSecondLineText('');
+        setHasOverflow(false);
       }
     };
 
     // 使用 ResizeObserver 监听容器大小变化
-    const observer = new ResizeObserver(measureLines);
+    const observer = new ResizeObserver(measureOverflow);
     if (containerRef.current) {
       observer.observe(containerRef.current);
     }
 
     // 初始测量
-    requestAnimationFrame(measureLines);
+    requestAnimationFrame(measureOverflow);
 
     return () => observer.disconnect();
   }, [address.address, address.tags]);
 
   return (
     <div className="address-line-wrapper">
-      {/* 第一行：标签 + 地址开头 */}
+      {/* 第一行：标签 + 地址 */}
       <div ref={containerRef} className="address-line line-1">
-        <div ref={tagsRef} className="tags-container">
+        <div className="tags-container">
           {address.tags.map((tag, idx) => (
             <TagBadge key={idx} tag={tag} />
           ))}
@@ -167,10 +177,15 @@ const AddressLine: React.FC<{ address: Address }> = ({ address }) => {
         {address.special && <span className="special-tag">{address.special}</span>}
       </div>
 
-      {/* 第二行：溢出的地址文本 */}
-      {lines && (
+      {/* 第二行：标签 + 溢出地址（如果有） */}
+      {hasOverflow && secondLineText && (
         <div className="address-line line-2">
-          <span className="address-text address-text-second">{lines}</span>
+          <div className="tags-container">
+            {address.tags.map((tag, idx) => (
+              <TagBadge key={idx} tag={tag} />
+            ))}
+          </div>
+          <span className="address-text address-text-second">{secondLineText}</span>
           {address.special && <span className="special-tag">{address.special}</span>}
         </div>
       )}
