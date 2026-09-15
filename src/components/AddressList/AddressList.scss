@@ -88,19 +88,11 @@ body {
 /* 地址行 - 标签和地址名称可以在同一行，溢出换行，最多两行 */
 .address-line {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   flex-wrap: wrap;
   max-height: 2.7em; /* 限制最多两行: 1.5em * 2 */
   overflow: hidden;
   position: relative;
-}
-
-.line-1 {
-  flex-wrap: wrap;
-}
-
-.line-2 {
-  margin-top: 0;
 }
 
 /* 标签容器 */
@@ -111,12 +103,6 @@ body {
   gap: 8px;
   margin-right: 8px;
   flex-shrink: 0;
-}
-
-.tags-end {
-  // 第二行标签最多占 50% 宽度
-  max-width: 50%;
-  flex-wrap: wrap;
 }
 
 /* 标签徽章 */

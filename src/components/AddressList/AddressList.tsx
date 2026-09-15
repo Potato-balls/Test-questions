@@ -94,77 +94,20 @@ const TagBadge: React.FC<{ tag: Tag }> = ({ tag }) => {
   );
 };
 
-// 地址行组件 - 处理标签和地址的布局（第三行重点实现）
+// 地址行组件 - 标签和地址名称共同展示，最多两行
 const AddressLine: React.FC<{ address: Address }> = ({ address }) => {
-  // 智能分配标签到第一行和第二行
-  const [firstLineTags, setFirstLineTags] = useState<Tag[]>([]);
-  const [secondLineTags, setSecondLineTags] = useState<Tag[]>([]);
-
-  React.useEffect(() => {
-    if (address.tags.length === 0) {
-      setFirstLineTags([]);
-      setSecondLineTags([]);
-      return;
-    }
-
-    // 如果标签数量 <= 2，全部放在第一行
-    if (address.tags.length <= 2) {
-      setFirstLineTags(address.tags);
-      setSecondLineTags([]);
-      return;
-    }
-
-    // 超过 2 个标签时，第一个放第一行，其余放第二行
-    // 如果第二行标签总宽度超过 50%，则调整
-    const firstTag = address.tags[0];
-    const restTags = address.tags.slice(1);
-
-    // 估算宽度：中文标签约 40px，英文标签约 50px
-    const estimateWidth = (tag: Tag): number => {
-      const charCount = tag.label.length;
-      if (/[一-龥]/.test(tag.label)) {
-        return charCount * 20; // 中文字符
-      }
-      return charCount * 12; // 英文字符
-    };
-
-    // 检查第二行总宽度是否超过 50% (假设总宽度 375px, 50% = 187.5px)
-    const secondLineWidth = restTags.reduce((sum, t) => sum + estimateWidth(t), 0);
-    const MAX_SECOND_LINE_WIDTH = 187;
-
-    if (secondLineWidth > MAX_SECOND_LINE_WIDTH) {
-      // 尝试分配：第一个标签第一行，第二、三个标签第二行，其余第三行
-      setFirstLineTags([firstTag]);
-      setSecondLineTags(restTags.slice(0, 2));
-    } else {
-      setFirstLineTags([firstTag]);
-      setSecondLineTags(restTags);
-    }
-  }, [address.tags]);
-
   return (
     <div className="address-line-wrapper">
-      {/* 第一行：标签 + 地址开头 */}
-      <div className="address-line line-1">
-        <div className="tags-container">
-          {firstLineTags.map((tag, idx) => (
-            <TagBadge key={idx} tag={tag} />
-          ))}
-        </div>
+      <div className="address-line">
+        {/* 标签 */}
+        {address.tags.map((tag, idx) => (
+          <TagBadge key={idx} tag={tag} />
+        ))}
+        {/* 地址文本 */}
         <span className="address-text">{address.address}</span>
+        {/* 特殊信息 */}
         {address.special && <span className="special-tag">{address.special}</span>}
       </div>
-
-      {/* 第二行：剩余标签 */}
-      {secondLineTags.length > 0 && (
-        <div className="address-line line-2">
-          <div className="tags-container tags-end">
-            {secondLineTags.map((tag, idx) => (
-              <TagBadge key={idx} tag={tag} />
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 };
