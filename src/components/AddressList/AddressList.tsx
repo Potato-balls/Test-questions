@@ -17,15 +17,17 @@ interface Address {
   special?: string; // 特殊信息如倒计时
 }
 
-interface Address {
-  id: string;
-  tags: Tag[];
-  address: string;
-  name: string;
-  phone: string;
-  isSelected?: boolean;
-  special?: string; // 特殊信息如倒计时
-}
+// 估算标签宽度（像素）
+const estimateTagWidth = (tag: Tag): number => {
+  const text = tag.label;
+  let width = 0;
+  for (let i = 0; i < text.length; i++) {
+    const charCode = text.charCodeAt(i);
+    // 中文字符约 20px，英文/数字约 12px
+    width += charCode > 127 ? 20 : 12;
+  }
+  return width + 24; // padding: 4px * 2 + border-radius
+};
 
 // 示例数据 - 模拟图片中的地址列表
 const MOCK_ADDRESSES: Address[] = [
@@ -104,6 +106,33 @@ const MOCK_ADDRESSES: Address[] = [
     phone: '112****3838',
     isSelected: false,
   },
+  // 第三行标签测试用例：3个标签，地址溢出
+  {
+    id: '8',
+    tags: [
+      { label: '常用', type: 'common' },
+      { label: '公司', type: 'company' },
+      { label: '学校', type: 'school' },
+    ],
+    address: '这是一段很长的地址文本用于测试当有三个标签时第二行末尾显示第三个标签且不超过50%宽度',
+    name: '张先生',
+    phone: '112****3838',
+    isSelected: false,
+  },
+  // 第三行标签测试用例：4个标签，地址溢出
+  {
+    id: '9',
+    tags: [
+      { label: '常用', type: 'common' },
+      { label: '父母家', type: 'parents' },
+      { label: '学校', type: 'school' },
+      { label: '家', type: 'home' },
+    ],
+    address: '长地址文本测试第三行标签分配逻辑确保第二个和第三个标签能正确显示在第二行末尾且总宽度不超过50%',
+    name: '张先生',
+    phone: '112****3838',
+    isSelected: false,
+  },
 ];
 
 // 单个标签组件
@@ -115,36 +144,55 @@ const TagBadge: React.FC<{ tag: Tag }> = ({ tag }) => {
   );
 };
 
-// 地址行组件 - 标签在第一行，地址可折行到第二行（第二行无标签）
+// 地址行组件 - 支持标签智能分配
 const AddressLine: React.FC<{ address: Address }> = ({ address }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
-  const textRef = React.useRef<HTMLSpanElement>(null);
   const [secondLineText, setSecondLineText] = React.useState<string>('');
   const [hasOverflow, setHasOverflow] = React.useState(false);
+  const [secondLineTags, setSecondLineTags] = React.useState<Tag[]>([]);
 
   React.useEffect(() => {
     const measureOverflow = () => {
-      if (!containerRef.current || !textRef.current) return;
+      if (!containerRef.current) return;
 
       const container = containerRef.current;
-
-      // 测量容器可用宽度（减去标签宽度）
       const containerWidth = container.clientWidth;
       const tagsElement = container.querySelector('.tags-container') as HTMLElement;
       const tagsWidth = tagsElement?.offsetWidth || 0;
       const availableWidth = containerWidth - tagsWidth - 16;
 
-      // 估算每行可容纳的字符数
+      // 估算每行可容纳的字符数（中文字符约 18px）
       const charsPerLine = Math.floor(availableWidth / 18);
       const totalChars = address.address.length;
 
       if (totalChars > charsPerLine) {
-        // 需要显示第二行
+        // 地址溢出，需要显示第二行
         setSecondLineText(address.address.slice(charsPerLine));
         setHasOverflow(true);
+
+        // 标签分配逻辑：如果标签数 > 2，多余的标签放到第二行末尾
+        if (address.tags.length > 2) {
+          const remainingTags = address.tags.slice(2);
+          
+          // 计算第二行标签总宽度，确保不超过容器的 50%
+          const maxWidth = containerWidth * 0.5;
+          let actualTags: Tag[] = [];
+          let totalWidth = 0;
+          
+          for (const tag of remainingTags) {
+            const tagWidth = estimateTagWidth(tag);
+            if (totalWidth + tagWidth <= maxWidth) {
+              actualTags.push(tag);
+              totalWidth += tagWidth;
+            }
+          }
+          
+          setSecondLineTags(actualTags);
+        }
       } else {
         setSecondLineText('');
         setHasOverflow(false);
+        setSecondLineTags([]);
       }
     };
 
@@ -177,6 +225,14 @@ const AddressLine: React.FC<{ address: Address }> = ({ address }) => {
       {hasOverflow && secondLineText && (
         <div className="address-line line-2">
           <span className="address-text address-text-second">{secondLineText}</span>
+          {/* 第二行末尾标签（如果有且符合宽度限制） */}
+          {secondLineTags.length > 0 && (
+            <div className="tags-container tags-container-second">
+              {secondLineTags.map((tag, idx) => (
+                <TagBadge key={idx} tag={tag} />
+              ))}
+            </div>
+          )}
           {address.special && <span className="special-tag">{address.special}</span>}
         </div>
       )}

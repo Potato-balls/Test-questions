@@ -127,7 +127,7 @@ const Question3: React.FC = () => {
         {/* 邮件签名 */}
         <div className="email-footer">
           <div className="signature">
-            <div className="signature-name">求职者</div>
+            <div className="signature-name">孙铭宏</div>
             <div className="signature-date">2026年9月16日</div>
           </div>
         </div>

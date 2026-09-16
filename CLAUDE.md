@@ -90,6 +90,18 @@ const checkOverflow = () => {
     setNeedsSecondLine(scrollWidth > clientWidth);
   }
 };
+
+// 估算标签宽度（像素）
+const estimateTagWidth = (tag: Tag): number => {
+  const text = tag.label;
+  let width = 0;
+  for (let i = 0; i < text.length; i++) {
+    const charCode = text.charCodeAt(i);
+    // 中文字符约 20px，英文/数字约 12px
+    width += charCode > 127 ? 20 : 12;
+  }
+  return width + 24; // padding: 4px * 2 + border-radius
+};
 ```
 
 **关键规则：**
@@ -97,6 +109,37 @@ const checkOverflow = () => {
 - 地址文本在标签后，可折行到第二行
 - 第二行只显示地址文本，不包含标签
 - 使用 JavaScript 检测溢出，而非纯 CSS 截断
+- **第三行标签智能分配**：当标签数 > 2 且地址溢出时，多余标签尝试放到第二行末尾
+- **第二行标签宽度限制**：总宽度不超过容器宽度的 50%
+
+**第三行标签分配算法**：
+```typescript
+if (address.tags.length > 2 && hasOverflow) {
+  const remainingTags = address.tags.slice(2);
+  const maxWidth = containerWidth * 0.5;
+  let actualTags: Tag[] = [];
+  let totalWidth = 0;
+  
+  for (const tag of remainingTags) {
+    const tagWidth = estimateTagWidth(tag);
+    if (totalWidth + tagWidth <= maxWidth) {
+      actualTags.push(tag);
+      totalWidth += tagWidth;
+    }
+  }
+  setSecondLineTags(actualTags);
+}
+```
+
+**测试用例覆盖**：
+| ID | 标签数量 | 地址长度 | 预期行为 |
+|----|---------|---------|---------|
+| 1-2 | 2 | 短 | 第一行显示全部标签和地址 |
+| 3-4 | 2 | 中等 | 第一行显示全部标签和地址 |
+| 5-6 | 0-2 | 超长 | 地址溢出，显示省略号 |
+| 7 | 2 | 超长 | 地址溢出，显示省略号 |
+| 8 | 3 | 超长 | 第三行出现"学校"标签（宽度 ≤ 50%） |
+| 9 | 4 | 超长 | 第三行出现"父母家+学校+家"标签（总宽度 ≤ 50%） |
 
 ### 状态管理
 
@@ -378,8 +421,9 @@ const cp2y = fromY - 60;
 - **2026-09-15**: 修复抛物线动效起点：点击横幅时飞行动画从横幅中心出发，点击底部按钮时从按钮中心出发；落点使用 DOM getBoundingClientRect() 精确测量卡片正中心坐标，消除固定估算误差
 - **2026-09-15**: 重构时序机制：用 RAF 双重等待 + ref 状态机替代 rAF 手动等待，解决 React 批量更新竞态导致 DOM 未就绪的问题
 - **2026-09-15**: 修复动画触发问题：使用 `animStateRef` 状态机（idle→measuring→flying）防止重复触发，确保每次点击只产生一次飞行动画
+- **2026-09-15**: 试题一添加第三行标签智能分配算法：标签数 > 2 且地址溢出时，多余标签放到第二行末尾，总宽度不超过容器 50%；新增测试用例 ID 8-9 覆盖该逻辑
 
 ---
 
 **维护者**: sunminghong  
-**最后更新**: 2026-09-15（试题二券浮层 + 主页入口）
+**最后更新**: 2026-09-15（试题一第三行标签分配算法 + 试题三面试回复邮件）
