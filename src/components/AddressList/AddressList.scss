@@ -120,9 +120,10 @@ body {
 /* 地址行 */
 .address-line {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   width: 100%;
 }
+
 
 .line-1 {
   /* 第一行正常显示 */
