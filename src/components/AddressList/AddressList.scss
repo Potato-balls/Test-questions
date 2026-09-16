@@ -117,8 +117,11 @@ body {
   margin-bottom: 8px;
 }
 
-/* 地址行 - 标签和地址文本行内流式排列，地址超出后第二行从最左边开始 */
+/* 地址行 - flex 布局：标签 + 地址 + 特殊标签（固定右侧50%） */
 .address-line {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
   font-size: 32px;
   line-height: 1.5;
 }
@@ -178,12 +181,25 @@ body {
   color: #00838F;
 }
 
-/* 地址文本 - 紧跟标签后，自然换行，最多2行，超出省略号 */
+/* 地址文本 - 默认最多2行，超出省略 */
 .address-text {
   font-weight: 500;
   color: #333;
   word-break: break-all;
-  display: inline;
+  flex: 1;
+  min-width: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 地址文本 - 有特殊标签时，单行省略 */
+.address-text-special {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 /* 特殊标签（如倒计时）- 固定在右侧，占当前行宽度50% */
