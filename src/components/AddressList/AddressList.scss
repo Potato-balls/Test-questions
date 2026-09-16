@@ -117,10 +117,14 @@ body {
   margin-bottom: 8px;
 }
 
-/* 地址行 - 行内流式排列：标签 + 地址 (+ 特殊标签)，超出后第二行从最左边开始 */
+/* 地址行 - 行内流式排列，最多2行 */
 .address-line {
   font-size: 32px;
   line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* 标签徽章 - 行内块，不换行，紧跟地址文字前 */
@@ -178,7 +182,7 @@ body {
   color: #00838F;
 }
 
-/* 地址文本 - 默认最多2行，超出省略 */
+/* 地址文本 - 行内排列，跟随标签后 */
 .address-text {
   font-weight: 500;
   color: #333;
@@ -186,16 +190,7 @@ body {
   display: inline;
 }
 
-/* 地址文本 - 有特殊标签时，同样最多2行（特殊标签跟在地址后） */
-.address-text-special {
-  /* 保持行内流式，但有特殊标签时文字和标签整体不超过2行 */
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* 特殊标签（如倒计时）- 固定在右侧，占当前行宽度50% */
+/* 特殊标签（如倒计时）- 行内跟随地址后 */
 .special-tag {
   display: inline-flex;
   align-items: center;
