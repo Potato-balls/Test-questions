@@ -1,0 +1,96 @@
+.questions-page {
+  min-height: 100dvh;
+  background: linear-gradient(180deg, #f5f7fa 0%, #ffffff 100%);
+  padding: 0 0 calc(32px + env(safe-area-inset-bottom)) 0;
+}
+
+.questions-header {
+  padding: 64px 32px 40px;
+  text-align: center;
+}
+
+.questions-title {
+  font-size: 40px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
+.questions-subtitle {
+  font-size: 26px;
+  color: #999;
+}
+
+.questions-list {
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.question-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px 28px;
+  border: 2px solid transparent;
+  border-left: 6px solid;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.15s, box-shadow 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.question-card:active {
+  transform: scale(0.98);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+}
+
+.question-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.question-id {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #1677ff;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.question-title {
+  font-size: 30px;
+  font-weight: 600;
+}
+
+.question-desc {
+  font-size: 24px;
+  color: #666;
+  margin: 0;
+  padding-left: 48px;
+}
+
+.question-arrow {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 28px;
+  color: #ccc;
+}
+
+/* 微信小程序适配 */
+.wechat-miniprogram & {
+  .question-card {
+    padding: 20px 24px;
+  }
+}

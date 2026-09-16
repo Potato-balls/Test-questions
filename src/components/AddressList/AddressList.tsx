@@ -17,6 +17,16 @@ interface Address {
   special?: string; // 特殊信息如倒计时
 }
 
+interface Address {
+  id: string;
+  tags: Tag[];
+  address: string;
+  name: string;
+  phone: string;
+  isSelected?: boolean;
+  special?: string; // 特殊信息如倒计时
+}
+
 // 示例数据 - 模拟图片中的地址列表
 const MOCK_ADDRESSES: Address[] = [
   {

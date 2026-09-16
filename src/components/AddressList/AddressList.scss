@@ -5,10 +5,25 @@
   box-sizing: border-box;
 }
 
+html {
+  font-size: 16px;
+  /* 禁止选中文字 */
+  -webkit-user-select: none;
+  user-select: none;
+  /* 禁止弹性滚动 */
+  overscroll-behavior-y: contain;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
   background-color: #f5f5f5;
   min-height: 100vh;
+  min-height: 100dvh;
+  /* iOS 字体平滑 */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* 禁止长按弹出菜单 */
+  -webkit-touch-callout: none;
 }
 
 /* 页面容器 */
@@ -17,6 +32,10 @@ body {
   margin: 0 auto;
   background-color: #f5f5f5;
   min-height: 100vh;
+  min-height: 100dvh;
+  /* iOS safe-area */
+  padding-top: env(safe-area-inset-top, 0);
+  padding-bottom: env(safe-area-inset-bottom, 0);
 }
 
 /* 页面头部 */
@@ -27,6 +46,8 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
+  /* iOS 安全区适配 */
+  padding-top: max(32px, env(safe-area-inset-top + 32px));
 }
 
 .page-title {
@@ -36,9 +57,6 @@ body {
 }
 
 /* 地址列表 */
-.address-list {
-  background-color: #fff;
-}
 
 /* 地址项 */
 .address-item {
@@ -50,6 +68,14 @@ body {
   position: relative;
   cursor: pointer;
   transition: background-color 0.2s;
+  /* 移除 iOS 触摸高亮 */
+  -webkit-tap-highlight-color: transparent;
+  /* 确保触摸反馈区域足够大 */
+  min-height: 100px;
+
+  &:active {
+    background-color: #f0f0f0;
+  }
 
   &:hover {
     background-color: #fafafa;
@@ -64,6 +90,12 @@ body {
 .item-checkbox {
   margin-top: 8px;
   flex-shrink: 0;
+  /* 增大触摸区域 */
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .radio-input {
@@ -227,14 +259,19 @@ body {
 
 /* 编辑按钮 */
 .edit-btn {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   margin-left: 16px;
   color: #ff4d4f;
+  -webkit-tap-highlight-color: transparent;
+
+  &:active {
+    opacity: 0.7;
+  }
 
   svg {
     width: 24px;
@@ -246,6 +283,7 @@ body {
 @media screen and (max-width: 768px) {
   .page-header {
     padding: 24px 24px 16px;
+    padding-top: max(24px, env(safe-area-inset-top + 24px));
   }
 
   .address-item {
@@ -253,16 +291,97 @@ body {
   }
 }
 
-/* 微信小程序适配 */
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
+/* 移动端适配 */
+@media screen and (max-width: 480px) {
+  .page-header {
+    padding: 20px 20px 16px;
+  }
+
+  .page-title {
+    font-size: 32px;
+  }
+
+  .address-item {
+    padding: 20px;
+    min-height: 88px;
+  }
+
+  .tag-badge {
+    padding: 2px 8px;
+    font-size: 22px;
+  }
+
+  .address-text-first,
+  .address-text-second {
+    font-size: 28px;
+  }
+
+  .contact-info {
+    font-size: 24px;
+  }
+}
+
+/* 微信/支付宝小程序特殊适配 */
+.wechat-miniprogram &,
+.alipay-miniprogram & {
   .page-container {
+    padding-bottom: constant(safe-area-inset-bottom);
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
 
-/* 支付宝小程序适配 */
-@supports (padding-bottom: constant(safe-area-inset-bottom)) {
-  .page-container {
-    padding-bottom: constant(safe-area-inset-bottom);
+/* 抖音小程序适配 */
+.douyin-miniprogram & {
+  .address-item {
+    /* 抖音小程序需要额外间距 */
+    padding-bottom: 28px;
   }
 }
+
+/* 暗黑模式支持 */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #1a1a1a;
+    color: #fff;
+  }
+
+  .page-container,
+  .page-header,
+  .address-item {
+    background-color: #1a1a1a;
+  }
+
+  .page-header {
+    border-bottom-color: #333;
+  }
+
+  .address-item {
+    border-bottom-color: #2a2a2a;
+  }
+
+  .page-title,
+  .address-text-first,
+  .address-text-second {
+    color: #fff;
+  }
+
+  .contact-info {
+    color: #999;
+  }
+
+  .contact-phone {
+    color: #666;
+  }
+}
+
+/* 横屏适配 */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+  .page-header {
+    padding: 16px 20px;
+  }
+
+  .address-item {
+    padding: 16px 20px;
+  }
+}
+
