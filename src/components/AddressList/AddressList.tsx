@@ -132,7 +132,7 @@ const TagBadge: React.FC<{ tag: Tag }> = ({ tag }) => {
   );
 };
 
-// 地址行组件 - 标签在左，地址文字紧跟标签后，特殊标签固定在右侧占50%
+// 地址行组件 - 标签和地址行内流式排列，有特殊标签时特殊标签固定右侧50%
 const AddressLine: React.FC<{ address: Address }> = ({ address }) => {
   const hasSpecial = !!address.special;
 
@@ -142,11 +142,11 @@ const AddressLine: React.FC<{ address: Address }> = ({ address }) => {
       {address.tags.map((tag, idx) => (
         <TagBadge key={idx} tag={tag} />
       ))}
-      {/* 地址文本区域：有 special 时单行省略，无 special 时最多2行 */}
+      {/* 地址文本区域 */}
       <span className={`address-text${hasSpecial ? ' address-text-special' : ''}`}>
         {address.address}
       </span>
-      {/* 特殊标签固定在右侧，占当前行宽度的50% */}
+      {/* 特殊标签：有时跟在地址后，占当前行宽度的50% */}
       {address.special && (
         <span className="special-tag">{address.special}</span>
       )}

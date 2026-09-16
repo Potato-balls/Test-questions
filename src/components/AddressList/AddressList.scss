@@ -117,11 +117,8 @@ body {
   margin-bottom: 8px;
 }
 
-/* 地址行 - flex 布局：标签 + 地址 + 特殊标签（固定右侧50%） */
+/* 地址行 - 行内流式排列：标签 + 地址 (+ 特殊标签)，超出后第二行从最左边开始 */
 .address-line {
-  display: flex;
-  align-items: flex-start;
-  width: 100%;
   font-size: 32px;
   line-height: 1.5;
 }
@@ -186,20 +183,12 @@ body {
   font-weight: 500;
   color: #333;
   word-break: break-all;
-  flex: 1;
-  min-width: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  display: inline;
 }
 
-/* 地址文本 - 有特殊标签时，单行省略 */
+/* 地址文本 - 有特殊标签时，单行省略（特殊标签跟在后面） */
 .address-text-special {
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 0;
 }
 
 /* 特殊标签（如倒计时）- 固定在右侧，占当前行宽度50% */
