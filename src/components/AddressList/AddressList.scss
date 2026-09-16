@@ -186,7 +186,7 @@ body {
   display: inline;
 }
 
-/* 特殊标签（如倒计时） */
+/* 特殊标签（如倒计时）- 固定在右侧，占当前行宽度50% */
 .special-tag {
   display: inline-flex;
   align-items: center;
@@ -198,6 +198,10 @@ body {
   font-size: 22px;
   margin-left: 12px;
   flex-shrink: 0;
+  max-width: 50%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* 联系信息 */
