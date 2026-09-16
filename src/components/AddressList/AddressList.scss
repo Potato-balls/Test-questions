@@ -117,19 +117,10 @@ body {
   margin-bottom: 8px;
 }
 
-/* 地址行 - 标签在左，地址文本同行跟随，超出换行 */
+/* 地址行 - 标签和地址文本行内流式排列 */
 .address-line {
-  display: flex;
-  align-items: flex-start;
-  width: 100%;
-}
-
-/* 标签容器 - 不折行 */
-.tags-container {
-  display: inline-flex;
-  align-items: center;
-  flex-shrink: 0;
-  margin-right: 8px;
+  font-size: 32px;
+  line-height: 1.5;
 }
 
 /* 标签徽章 - 不折行 */
@@ -186,15 +177,11 @@ body {
   color: #00838F;
 }
 
-/* 地址文本 - 跟随标签后同行排列，最多2行，超出省略号 */
+/* 地址文本 - 紧跟标签后，最多2行，超出省略号 */
 .address-text {
-  font-size: 32px;
   font-weight: 500;
   color: #333;
-  line-height: 1.5;
   word-break: break-all;
-  flex: 1;
-  min-width: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
