@@ -132,15 +132,15 @@ const TagBadge: React.FC<{ tag: Tag }> = ({ tag }) => {
   );
 };
 
-// 地址行组件 - 地址文本自然换行，最多2行，超出省略号
+// 地址行组件 - 标签在左，地址文字紧跟标签后，超出后第二行从最左边开始
 const AddressLine: React.FC<{ address: Address }> = ({ address }) => {
   return (
     <div className="address-line">
-      {/* 标签：行内排列，不折行 */}
+      {/* 标签：行内排列，不换行 */}
       {address.tags.map((tag, idx) => (
         <TagBadge key={idx} tag={tag} />
       ))}
-      {/* 地址文本：紧跟标签后，超出第一行后第二行从最左边开始 */}
+      {/* 地址文本：紧跟标签后，超出第一行后第二行从最左边开始，最多2行 */}
       <span className="address-text">{address.address}</span>
       {address.special && <span className="special-tag">{address.special}</span>}
     </div>
