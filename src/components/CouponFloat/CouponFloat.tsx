@@ -245,18 +245,29 @@ const CouponFloat: React.FC<{ autoOpen?: boolean }> = ({ autoOpen = false }) => 
         const newCount = newCoupons.length;
 
         const items: FlyingItem[] = [];
+        // 飞行图标尺寸（与 CSS 中的 width/height 一致）
+        const FLYING_ICON_W = 72;
+        const FLYING_ICON_H = 48;
+
         for (let i = 0; i < newCount; i++) {
-          // 获取新增的卡片（列表末尾的几项）
+          // 获取新增的卡片（列表开头的前 newCount 个卡片）
           const cardEl = allItems[i];
           if (!cardEl) continue;
 
           const rect = cardEl.getBoundingClientRect();
+          // 目标位置：卡片中心（减去图标尺寸的一半，使图标中心对齐卡片中心）
+          const toX = rect.left + rect.width / 2 - FLYING_ICON_W / 2;
+          const toY = rect.top + rect.height / 2 - FLYING_ICON_H / 2;
+
+          console.log('[COUPONS] 卡片', i, 'rect:', { left: rect.left, top: rect.top, width: rect.width, height: rect.height });
+          console.log('[COUPONS] 目标落点（图标左上角）:', { toX, toY, centerX: rect.left + rect.width / 2, centerY: rect.top + rect.height / 2 });
+
           items.push({
             id: `fly-${Date.now()}-${i}`,
-            fromX: start.x - 36, // 券图标宽度的一半，使其中心对齐
-            fromY: start.y,
-            toX: rect.left + rect.width / 2, // 卡片中心 X
-            toY: rect.top + rect.height / 2, // 卡片中心 Y
+            fromX: start.x - FLYING_ICON_W / 2, // 起点的左上角（按钮中心向左偏移半个图标宽）
+            fromY: start.y - FLYING_ICON_H / 2, // 起点的左上角（按钮中心向上偏移半个图标高）
+            toX,
+            toY,
             coupon: newCoupons[i],
           });
         }

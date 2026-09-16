@@ -1,0 +1,276 @@
+/* ========== 试题三：信纸样式页面 ========== */
+.q3-page {
+  min-height: 100dvh;
+  background: linear-gradient(135deg, #f5f0e8 0%, #e8e0d0 100%);
+  padding: 0 0 calc(32px + env(safe-area-inset-bottom)) 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* ========== 信纸容器 ========== */
+.letter-container {
+  width: 100%;
+  max-width: 680px;
+  margin: 24px 16px;
+  background: #fffcf5;
+  border-radius: 4px;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.08),
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 信纸纹理 */
+.letter-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      transparent,
+      transparent 31px,
+      #e8e4d8 31px,
+      #e8e4d8 32px
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 左侧红色边线 */
+.letter-container::after {
+  content: '';
+  position: absolute;
+  left: 60px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: rgba(200, 50, 50, 0.15);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ========== 信纸头部 ========== */
+.letter-header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 40px 48px 24px;
+  border-bottom: 1px solid #e8e4d8;
+}
+
+/* 邮票装饰 */
+.letter-seal {
+  width: 64px;
+  height: 76px;
+  background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
+  border-radius: 4px;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.letter-seal::before {
+  content: '✉';
+  font-size: 28px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.letter-seal::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px dashed rgba(255, 255, 255, 0.4);
+  border-radius: 2px;
+}
+
+.letter-date {
+  font-size: 24px;
+  color: #666;
+  font-family: 'STSong', 'SimSun', serif;
+  margin-top: 8px;
+}
+
+/* ========== 信纸正文 ========== */
+.letter-body {
+  position: relative;
+  z-index: 1;
+  padding: 32px 48px 40px;
+}
+
+.letter-greeting {
+  font-size: 30px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16px;
+  font-family: 'STSong', 'SimSun', serif;
+  line-height: 1.6;
+}
+
+.letter-content {
+  font-size: 28px;
+  color: #444;
+  line-height: 32px;
+  font-family: 'STSong', 'SimSun', serif;
+  text-align: justify;
+}
+
+.letter-paragraph {
+  margin: 0 0 16px 0;
+  text-indent: 2em;
+}
+
+.letter-section-title {
+  font-weight: 600;
+  color: #333;
+  text-indent: 0;
+  margin-top: 24px;
+  margin-bottom: 12px;
+}
+
+/* ========== 信纸签名 ========== */
+.letter-signature {
+  position: relative;
+  z-index: 1;
+  text-align: right;
+  padding: 24px 48px 0;
+  border-top: 1px solid #e8e4d8;
+  margin-top: 8px;
+}
+
+.signature-name {
+  font-size: 28px;
+  color: #333;
+  font-family: 'STSong', 'SimSun', serif;
+  font-weight: 600;
+}
+
+.signature-date {
+  font-size: 24px;
+  color: #666;
+  font-family: 'STSong', 'SimSun', serif;
+  margin-top: 4px;
+}
+
+/* ========== 信纸底部 ========== */
+.letter-footer {
+  position: relative;
+  z-index: 1;
+  padding: 16px 48px 24px;
+  border-top: 1px solid #e8e4d8;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.letter-watermark {
+  font-size: 20px;
+  color: #bbb;
+  font-family: 'STSong', 'SimSun', serif;
+  letter-spacing: 4px;
+}
+
+/* ========== 响应式适配 ========== */
+@media screen and (max-width: 480px) {
+  .letter-container {
+    margin: 16px 8px;
+  }
+
+  .letter-header {
+    padding: 24px 24px 16px;
+  }
+
+  .letter-seal {
+    width: 48px;
+    height: 60px;
+  }
+
+  .letter-seal::before {
+    font-size: 22px;
+  }
+
+  .letter-date {
+    font-size: 20px;
+  }
+
+  .letter-body {
+    padding: 20px 24px 24px;
+  }
+
+  .letter-greeting {
+    font-size: 26px;
+  }
+
+  .letter-content {
+    font-size: 24px;
+    line-height: 28px;
+  }
+
+  .letter-section-title {
+    font-size: 24px;
+  }
+
+  .letter-signature {
+    padding: 16px 24px 0;
+  }
+
+  .signature-name {
+    font-size: 24px;
+  }
+
+  .signature-date {
+    font-size: 20px;
+  }
+
+  .letter-footer {
+    padding: 12px 24px 16px;
+  }
+}
+
+/* ========== 微信小程序适配 ========== */
+.wechat-miniprogram & {
+  .letter-container {
+    margin: 16rpx 8rpx;
+  }
+}
+
+/* ========== 暗黑模式适配 ========== */
+@media (prefers-color-scheme: dark) {
+  .q3-page {
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+  }
+
+  .letter-container {
+    background: #f5f0e8;
+  }
+
+  .letter-container::before {
+    background-image:
+      repeating-linear-gradient(
+        transparent,
+        transparent 31px,
+        #ddd8c8 31px,
+        #ddd8c8 32px
+      );
+  }
+
+  .letter-greeting,
+  .letter-section-title,
+  .signature-name {
+    color: #222;
+  }
+
+  .letter-content {
+    color: #333;
+  }
+
+  .letter-date,
+  .signature-date {
+    color: #555;
+  }
+}
