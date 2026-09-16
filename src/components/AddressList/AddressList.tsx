@@ -17,18 +17,6 @@ interface Address {
   special?: string; // 特殊信息如倒计时
 }
 
-// 估算标签宽度（像素）
-const estimateTagWidth = (tag: Tag): number => {
-  const text = tag.label;
-  let width = 0;
-  for (let i = 0; i < text.length; i++) {
-    const charCode = text.charCodeAt(i);
-    // 中文字符约 20px，英文/数字约 12px
-    width += charCode > 127 ? 20 : 12;
-  }
-  return width + 24; // padding: 4px * 2 + border-radius
-};
-
 // 示例数据 - 模拟图片中的地址列表
 const MOCK_ADDRESSES: Address[] = [
   {
@@ -144,98 +132,19 @@ const TagBadge: React.FC<{ tag: Tag }> = ({ tag }) => {
   );
 };
 
-// 地址行组件 - 支持标签智能分配
+// 地址行组件 - 地址文本自然换行，最多2行，超出省略号
 const AddressLine: React.FC<{ address: Address }> = ({ address }) => {
-  const containerRef = React.useRef<HTMLDivElement>(null);
-  const [secondLineText, setSecondLineText] = React.useState<string>('');
-  const [hasOverflow, setHasOverflow] = React.useState(false);
-  const [secondLineTags, setSecondLineTags] = React.useState<Tag[]>([]);
-
-  React.useEffect(() => {
-    const measureOverflow = () => {
-      if (!containerRef.current) return;
-
-      const container = containerRef.current;
-      const containerWidth = container.clientWidth;
-      const tagsElement = container.querySelector('.tags-container') as HTMLElement;
-      const tagsWidth = tagsElement?.offsetWidth || 0;
-      const availableWidth = containerWidth - tagsWidth - 16;
-
-      // 估算每行可容纳的字符数（中文字符约 18px）
-      const charsPerLine = Math.floor(availableWidth / 18);
-      const totalChars = address.address.length;
-
-      if (totalChars > charsPerLine) {
-        // 地址溢出，需要显示第二行
-        setSecondLineText(address.address.slice(charsPerLine));
-        setHasOverflow(true);
-
-        // 标签分配逻辑：如果标签数 > 2，多余的标签放到第二行末尾
-        if (address.tags.length > 2) {
-          const remainingTags = address.tags.slice(2);
-          
-          // 计算第二行标签总宽度，确保不超过容器的 50%
-          const maxWidth = containerWidth * 0.5;
-          let actualTags: Tag[] = [];
-          let totalWidth = 0;
-          
-          for (const tag of remainingTags) {
-            const tagWidth = estimateTagWidth(tag);
-            if (totalWidth + tagWidth <= maxWidth) {
-              actualTags.push(tag);
-              totalWidth += tagWidth;
-            }
-          }
-          
-          setSecondLineTags(actualTags);
-        }
-      } else {
-        setSecondLineText('');
-        setHasOverflow(false);
-        setSecondLineTags([]);
-      }
-    };
-
-    // 使用 ResizeObserver 监听容器大小变化
-    const observer = new ResizeObserver(measureOverflow);
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
-
-    // 初始测量
-    requestAnimationFrame(measureOverflow);
-
-    return () => observer.disconnect();
-  }, [address.address, address.tags]);
-
   return (
-    <div className="address-line-wrapper">
-      {/* 第一行：标签 + 地址开头 */}
-      <div ref={containerRef} className="address-line line-1">
-        <div className="tags-container">
-          {address.tags.map((tag, idx) => (
-            <TagBadge key={idx} tag={tag} />
-          ))}
-        </div>
-        <span className="address-text address-text-first">{address.address}</span>
-        {address.special && <span className="special-tag">{address.special}</span>}
+    <div className="address-line">
+      {/* 标签区域：第一行开头，不折行 */}
+      <div className="tags-container">
+        {address.tags.map((tag, idx) => (
+          <TagBadge key={idx} tag={tag} />
+        ))}
       </div>
-
-      {/* 第二行：仅地址剩余部分（无标签） */}
-      {hasOverflow && secondLineText && (
-        <div className="address-line line-2">
-          <span className="address-text address-text-second">{secondLineText}</span>
-          {/* 第二行末尾标签（如果有且符合宽度限制） */}
-          {secondLineTags.length > 0 && (
-            <div className="tags-container tags-container-second">
-              {secondLineTags.map((tag, idx) => (
-                <TagBadge key={idx} tag={tag} />
-              ))}
-            </div>
-          )}
-          {address.special && <span className="special-tag">{address.special}</span>}
-        </div>
-      )}
+      {/* 地址文本：跟随标签后自然换行，最多2行 */}
+      <span className="address-text">{address.address}</span>
+      {address.special && <span className="special-tag">{address.special}</span>}
     </div>
   );
 };
