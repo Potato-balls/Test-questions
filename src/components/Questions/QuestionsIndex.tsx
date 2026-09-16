@@ -28,7 +28,7 @@ const QUESTIONS: Question[] = [
   {
     id: 3,
     title: '试题三',
-    desc: '待实现',
+    desc: '求职信（信纸样式）',
     path: '/q3',
     color: '#fa8c16',
   },
